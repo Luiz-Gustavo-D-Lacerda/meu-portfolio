@@ -117,6 +117,14 @@
             background: radial-gradient(ellipse 90% 70% at 50% -10%, rgba(124,58,237,0.14), transparent),
                         radial-gradient(ellipse 40% 40% at 90% 90%, rgba(57,255,20,0.05), transparent);
         }
+        .hero::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+            background-image: radial-gradient(rgba(124,58,237,0.2) 1px, transparent 1px);
+            background-size: 38px 38px;
+            -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 78%);
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 78%);
+            opacity: 0.45;
+        }
 
         /* floating tech badges */
         .hero-floats { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
@@ -221,11 +229,18 @@
 
         .about-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; position: sticky; top: 96px; }
         .card-avatar {
-            width: 72px; height: 72px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple), var(--green));
+            width: 78px; height: 78px; border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--purple), var(--green), #a855f7, var(--purple));
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.7rem; font-weight: 800; color: #fff; margin-bottom: 18px;
-            box-shadow: 0 0 24px var(--purple-glow);
+            margin-bottom: 18px; padding: 3px;
+            animation: av-spin 3s linear infinite;
+            box-shadow: 0 0 32px var(--purple-glow);
+        }
+        .av-inner {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: var(--bg-card);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem; font-weight: 800; color: #fff;
         }
         .about-card h3 { font-size: 1.15rem; margin-bottom: 3px; }
         .card-role { font-family: var(--font-mono); font-size: 0.78rem; color: var(--green); margin-bottom: 24px; }
@@ -249,7 +264,7 @@
         .project-card {
             background: var(--bg-card); border: 1px solid var(--border);
             border-radius: var(--radius-lg); overflow: hidden;
-            display: flex; flex-direction: column;
+            display: flex; flex-direction: column; position: relative;
             transition: transform 0.35s var(--ease), border-color 0.3s, box-shadow 0.3s, opacity 0.3s;
             transform-style: preserve-3d; will-change: transform;
         }
@@ -348,9 +363,90 @@
         .back-top:hover { color: var(--green); }
 
         /* ===== KEYFRAMES ===== */
-        @keyframes blink  { 0%,100%{opacity:1} 50%{opacity:0} }
-        @keyframes pulse  { 0%,100%{box-shadow:0 0 0 0 rgba(57,255,20,.4)} 60%{box-shadow:0 0 0 6px rgba(57,255,20,0)} }
-        @keyframes bobble { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+        @keyframes blink   { 0%,100%{opacity:1} 50%{opacity:0} }
+        @keyframes pulse   { 0%,100%{box-shadow:0 0 0 0 rgba(57,255,20,.4)} 60%{box-shadow:0 0 0 6px rgba(57,255,20,0)} }
+        @keyframes bobble  { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+        @keyframes av-spin { to { transform: rotate(360deg); } }
+
+        /* ===== MATRIX CANVAS ===== */
+        #matrix-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.07; }
+
+        /* ===== SCAN LINE ===== */
+        .hero-scan {
+            position: absolute; left: 0; right: 0; height: 2px; pointer-events: none; z-index: 3;
+            background: linear-gradient(90deg, transparent 0%, rgba(57,255,20,0.7) 30%, rgba(57,255,20,1) 50%, rgba(57,255,20,0.7) 70%, transparent 100%);
+            box-shadow: 0 0 18px var(--green), 0 0 40px var(--green-glow);
+            animation: scan-line 9s ease-in-out infinite 2s;
+            top: 0;
+        }
+        @keyframes scan-line {
+            0%   { top: 0%;   opacity: 0; }
+            4%   { opacity: 1; }
+            96%  { opacity: 0.8; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* ===== SECTION WATERMARK NUMBERS ===== */
+        .section { position: relative; }
+        .sec-num {
+            position: absolute; top: 50px; right: 32px;
+            font-family: var(--font-mono); font-size: clamp(5rem, 12vw, 10rem); font-weight: 900;
+            background: linear-gradient(135deg, rgba(124,58,237,0.05), rgba(57,255,20,0.03));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1; user-select: none; pointer-events: none; z-index: 0;
+            letter-spacing: -4px;
+        }
+
+        /* ===== TICKER ===== */
+        .ticker-wrap {
+            overflow: hidden; padding: 14px 0;
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 7%, black 93%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, black 7%, black 93%, transparent 100%);
+        }
+        .ticker { display: flex; width: max-content; animation: tick-scroll 32s linear infinite; }
+        .ticker-item {
+            display: flex; align-items: center; gap: 10px; padding: 0 28px;
+            font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);
+            white-space: nowrap; border-right: 1px solid var(--border);
+        }
+        .ticker-item i { font-size: 1rem; }
+        @keyframes tick-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ===== CARD TECH ICONS ===== */
+        .cb-icons { display: flex; gap: 16px; align-items: center; position: relative; z-index: 1; }
+        .cb-icons i { font-size: 2.5rem; transition: transform 0.4s var(--ease), filter 0.4s; filter: drop-shadow(0 4px 14px rgba(0,0,0,0.5)); }
+        .project-card:hover .cb-icons i:nth-child(1) { transform: translateY(-9px) rotate(-10deg) scale(1.1); }
+        .project-card:hover .cb-icons i:nth-child(2) { transform: translateY(-15px) scale(1.22); }
+        .project-card:hover .cb-icons i:nth-child(3) { transform: translateY(-9px) rotate(10deg) scale(1.1); }
+        .project-card:hover .cb-icons i { filter: drop-shadow(0 0 14px currentColor); }
+
+        /* ===== CARD MOUSE GLOW ===== */
+        .project-card::before {
+            content: ''; position: absolute; inset: 0; border-radius: var(--radius-lg);
+            background: radial-gradient(circle 200px at var(--mx, 50%) var(--my, 50%), rgba(124,58,237,0.13), transparent 70%);
+            opacity: 0; transition: opacity 0.35s; pointer-events: none; z-index: 0;
+        }
+        .project-card:hover::before { opacity: 1; }
+        .card-banner, .card-body { position: relative; z-index: 1; }
+
+        /* ===== CARD SHINE SWEEP ===== */
+        .project-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: var(--radius-lg);
+            background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.06) 50%, transparent 62%);
+            background-size: 200% 100%; background-position: -100% 0;
+            pointer-events: none; z-index: 5;
+            transition: background-position 0.65s ease;
+        }
+        .project-card:hover::after { background-position: 130% 0; }
+
+        /* ===== HERO SPOTLIGHT ===== */
+        #hero-glow {
+            position: absolute; width: 700px; height: 700px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, rgba(57,255,20,0.03) 45%, transparent 70%);
+            pointer-events: none; z-index: 1; transform: translate(-50%,-50%);
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
@@ -406,6 +502,9 @@
 <!-- HERO -->
 <section class="hero" id="home">
     <canvas id="hero-canvas"></canvas>
+    <canvas id="matrix-canvas"></canvas>
+    <div class="hero-scan"></div>
+    <div id="hero-glow"></div>
 
     <!-- floating badges -->
     <div class="hero-floats">
@@ -472,8 +571,43 @@
     </div>
 </section>
 
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker">
+        <div class="ticker-item"><i class="devicon-angular-plain colored"></i>Angular</div>
+        <div class="ticker-item"><i class="devicon-typescript-plain colored"></i>TypeScript</div>
+        <div class="ticker-item"><i class="devicon-csharp-plain colored"></i>.NET / C#</div>
+        <div class="ticker-item"><i class="devicon-python-plain colored"></i>Python</div>
+        <div class="ticker-item"><i class="devicon-flask-original" style="color:#e8e8e8"></i>Flask</div>
+        <div class="ticker-item"><i class="devicon-mysql-plain colored"></i>MySQL</div>
+        <div class="ticker-item"><i class="devicon-java-plain colored"></i>Java</div>
+        <div class="ticker-item"><i class="fa-brands fa-openai" style="color:#10a37f"></i>OpenAI</div>
+        <div class="ticker-item"><i class="devicon-git-plain colored"></i>Git</div>
+        <div class="ticker-item"><i class="devicon-azure-plain colored"></i>Azure</div>
+        <div class="ticker-item"><i class="devicon-html5-plain colored"></i>HTML5</div>
+        <div class="ticker-item"><i class="devicon-css3-plain colored"></i>CSS3</div>
+        <div class="ticker-item"><i class="devicon-javascript-plain colored"></i>JavaScript</div>
+        <div class="ticker-item"><i class="devicon-postman-plain colored"></i>Postman</div>
+        <div class="ticker-item"><i class="devicon-angular-plain colored"></i>Angular</div>
+        <div class="ticker-item"><i class="devicon-typescript-plain colored"></i>TypeScript</div>
+        <div class="ticker-item"><i class="devicon-csharp-plain colored"></i>.NET / C#</div>
+        <div class="ticker-item"><i class="devicon-python-plain colored"></i>Python</div>
+        <div class="ticker-item"><i class="devicon-flask-original" style="color:#e8e8e8"></i>Flask</div>
+        <div class="ticker-item"><i class="devicon-mysql-plain colored"></i>MySQL</div>
+        <div class="ticker-item"><i class="devicon-java-plain colored"></i>Java</div>
+        <div class="ticker-item"><i class="fa-brands fa-openai" style="color:#10a37f"></i>OpenAI</div>
+        <div class="ticker-item"><i class="devicon-git-plain colored"></i>Git</div>
+        <div class="ticker-item"><i class="devicon-azure-plain colored"></i>Azure</div>
+        <div class="ticker-item"><i class="devicon-html5-plain colored"></i>HTML5</div>
+        <div class="ticker-item"><i class="devicon-css3-plain colored"></i>CSS3</div>
+        <div class="ticker-item"><i class="devicon-javascript-plain colored"></i>JavaScript</div>
+        <div class="ticker-item"><i class="devicon-postman-plain colored"></i>Postman</div>
+    </div>
+</div>
+
 <!-- ABOUT -->
 <section class="section" id="about">
+    <span class="sec-num" aria-hidden="true">01</span>
     <div class="container">
         <div class="fade-in">
             <p class="section-label">quem sou eu</p>
@@ -491,7 +625,7 @@
                 </div>
             </div>
             <div class="about-card">
-                <div class="card-avatar">LG</div>
+                <div class="card-avatar"><div class="av-inner">LG</div></div>
                 <h3>Luiz Gustavo Lacerda</h3>
                 <p class="card-role">Full Stack Developer</p>
                 <ul class="info-list">
@@ -509,6 +643,7 @@
 
 <!-- PROJECTS -->
 <section class="section section-alt" id="projects">
+    <span class="sec-num" aria-hidden="true">02</span>
     <div class="container">
         <div class="fade-in">
             <p class="section-label">o que construí</p>
@@ -523,7 +658,13 @@
         <div class="projects-grid">
 
             <div class="project-card fade-in" data-category="fullstack" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.12">
-                <div class="card-banner banner-blue"><span>🏦</span></div>
+                <div class="card-banner banner-blue">
+                    <div class="cb-icons">
+                        <i class="devicon-csharp-plain colored"></i>
+                        <i class="devicon-angular-plain colored"></i>
+                        <i class="devicon-mysql-plain colored"></i>
+                    </div>
+                </div>
                 <div class="card-body">
                     <h3 class="card-name">QBank — Banco Digital</h3>
                     <p class="card-desc">Sistema bancário completo com arquitetura hexagonal, autenticação OAuth2/JWT, gerenciamento de contas e operações financeiras. Projeto em equipe de 5 pessoas.</p>
@@ -536,7 +677,13 @@
             </div>
 
             <div class="project-card fade-in" data-category="fullstack" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.12">
-                <div class="card-banner banner-purple"><span>⚖️</span></div>
+                <div class="card-banner banner-purple">
+                    <div class="cb-icons">
+                        <i class="devicon-python-plain colored"></i>
+                        <i class="fa-brands fa-openai" style="color:#10a37f;font-size:2.5rem"></i>
+                        <i class="devicon-flask-original" style="color:#e8e8e8;font-size:2.5rem"></i>
+                    </div>
+                </div>
                 <div class="card-body">
                     <h3 class="card-name">Chatbot Jurídico</h3>
                     <p class="card-desc">Assistente inteligente especializado em Direito do Consumidor com GPT-4, busca vetorial via FAISS, processamento de PDFs e frontend com alternância de temas.</p>
@@ -549,7 +696,13 @@
             </div>
 
             <div class="project-card fade-in" data-category="fullstack" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.12">
-                <div class="card-banner banner-green"><span>☀️</span></div>
+                <div class="card-banner banner-green">
+                    <div class="cb-icons">
+                        <i class="devicon-html5-plain colored"></i>
+                        <i class="fa-solid fa-robot" style="color:var(--green);font-size:2.5rem"></i>
+                        <i class="devicon-javascript-plain colored"></i>
+                    </div>
+                </div>
                 <div class="card-body">
                     <h3 class="card-name">SolarIA — Chatbot de Energia Solar</h3>
                     <p class="card-desc">Chatbot inteligente especializado em energia solar com interface conversacional responsiva e integração com backend de IA para respostas técnicas precisas.</p>
@@ -562,7 +715,13 @@
             </div>
 
             <div class="project-card fade-in" data-category="backend" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.12">
-                <div class="card-banner banner-pink"><span>☕</span></div>
+                <div class="card-banner banner-pink">
+                    <div class="cb-icons">
+                        <i class="devicon-java-plain colored"></i>
+                        <i class="fa-solid fa-vial-circle-check" style="color:#ec4899;font-size:2.5rem"></i>
+                        <i class="fa-brands fa-jira" style="color:#2684ff;font-size:2.5rem"></i>
+                    </div>
+                </div>
                 <div class="card-body">
                     <h3 class="card-name">Gestão de Contas</h3>
                     <p class="card-desc">Sistema bancário em Java com foco em qualidade de software — testes unitários, de integração, desempenho e caixa branca. Gerenciado com Jira em sprints.</p>
@@ -575,7 +734,13 @@
             </div>
 
             <div class="project-card fade-in" data-category="backend" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.12">
-                <div class="card-banner banner-blue"><span>⚽</span></div>
+                <div class="card-banner banner-blue">
+                    <div class="cb-icons">
+                        <i class="devicon-dotnetcore-plain colored"></i>
+                        <i class="fa-solid fa-server" style="color:#60a5fa;font-size:2.5rem"></i>
+                        <i class="devicon-mysql-plain colored"></i>
+                    </div>
+                </div>
                 <div class="card-body">
                     <h3 class="card-name">LuGol API</h3>
                     <p class="card-desc">API RESTful em .NET 8 com Entity Framework Core, autenticação com BCrypt, documentação Swagger automática e integração com banco MySQL.</p>
@@ -588,7 +753,13 @@
             </div>
 
             <div class="project-card fade-in" data-category="frontend" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.12">
-                <div class="card-banner banner-pink"><span>🛡️</span></div>
+                <div class="card-banner banner-pink">
+                    <div class="cb-icons">
+                        <i class="devicon-html5-plain colored"></i>
+                        <i class="devicon-css3-plain colored"></i>
+                        <i class="devicon-javascript-plain colored"></i>
+                    </div>
+                </div>
                 <div class="card-body">
                     <h3 class="card-name">Esparta — Landing Page</h3>
                     <p class="card-desc">Landing page de produto com formulário de cadastro, design visual temático e layout responsivo construído com HTML, CSS e JavaScript puros.</p>
@@ -606,6 +777,7 @@
 
 <!-- SKILLS -->
 <section class="section" id="skills">
+    <span class="sec-num" aria-hidden="true">03</span>
     <div class="container">
         <div class="fade-in">
             <p class="section-label">minhas ferramentas</p>
@@ -723,6 +895,7 @@
 
 <!-- CONTACT -->
 <section class="section section-alt" id="contact">
+    <span class="sec-num" aria-hidden="true">04</span>
     <div class="container">
         <div class="fade-in">
             <p class="section-label">vamos conversar</p>
@@ -833,6 +1006,39 @@ function type() {
 }
 type();
 
+/* ===== MATRIX RAIN ===== */
+const mxCanvas = document.getElementById('matrix-canvas');
+const mxCtx = mxCanvas.getContext('2d');
+const MX_CHARS = '.NET{}[]()=>async/await#include</>return void class def import export const let var 01'.split('');
+let mxCols, mxDrops;
+function mxResize() {
+    mxCanvas.width  = mxCanvas.offsetWidth;
+    mxCanvas.height = mxCanvas.offsetHeight;
+    mxCols  = Math.floor(mxCanvas.width / 18);
+    mxDrops = new Array(mxCols).fill(1);
+}
+let mxTick = 0;
+function mxDraw() {
+    if (++mxTick % 2 !== 0) return;
+    mxCtx.fillStyle = 'rgba(7,7,16,0.08)';
+    mxCtx.fillRect(0, 0, mxCanvas.width, mxCanvas.height);
+    mxCtx.font = '13px JetBrains Mono, monospace';
+    for (let i = 0; i < mxDrops.length; i++) {
+        const ch = MX_CHARS[Math.floor(Math.random() * MX_CHARS.length)];
+        const bright = Math.random() > 0.92;
+        mxCtx.fillStyle = bright ? '#ffffff' : '#39ff14';
+        mxCtx.globalAlpha = bright ? 0.9 : (Math.random() * 0.5 + 0.2);
+        mxCtx.fillText(ch, i * 18, mxDrops[i] * 18);
+        mxCtx.globalAlpha = 1;
+        if (mxDrops[i] * 18 > mxCanvas.height && Math.random() > 0.974) mxDrops[i] = 0;
+        mxDrops[i]++;
+    }
+}
+function mxLoop() { mxDraw(); requestAnimationFrame(mxLoop); }
+mxResize();
+mxLoop();
+window.addEventListener('resize', mxResize);
+
 /* ===== PARTICLES ===== */
 const canvas = document.getElementById('hero-canvas');
 const ctx    = canvas.getContext('2d');
@@ -939,6 +1145,34 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 
 /* ===== VANILLA TILT ===== */
 VanillaTilt.init(document.querySelectorAll('[data-tilt]'), { max: 8, speed: 400, glare: true, 'max-glare': 0.12 });
+
+/* ===== CARD MOUSE GLOW ===== */
+document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left)  / r.width  * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top)   / r.height * 100).toFixed(1) + '%');
+    });
+});
+
+/* ===== MAGNETIC BUTTONS ===== */
+document.querySelectorAll('.btn-primary, .btn-outline').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width  / 2)) * 0.28;
+        const dy = (e.clientY - (r.top  + r.height / 2)) * 0.28;
+        btn.style.transform = `translateY(-2px) translate(${dx}px,${dy}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+});
+
+/* ===== HERO SPOTLIGHT ===== */
+const heroGlow = document.getElementById('hero-glow');
+document.getElementById('home').addEventListener('mousemove', e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    heroGlow.style.left = (e.clientX - r.left) + 'px';
+    heroGlow.style.top  = (e.clientY - r.top)  + 'px';
+});
 
 /* ===== CONTACT FORM ===== */
 document.getElementById('contactForm').addEventListener('submit', function(e) {
