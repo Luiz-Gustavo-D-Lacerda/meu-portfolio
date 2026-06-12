@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currículo — Luiz Gustavo Domingues Lacerda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --accent:   #7c3aed;
+            --dark:     #111827;
+            --muted:    #6b7280;
+            --light:    #f3f4f6;
+            --border:   #e5e7eb;
+            --font:     'Inter', -apple-system, sans-serif;
+        }
+
+        html { font-size: 11.5px; }
+
+        body {
+            font-family: var(--font);
+            background: #e5e7eb;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        /* ===== PAGE ===== */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 24px auto;
+            background: #fff;
+            padding: 18px 32px 16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+        }
+
+        /* ===== HEADER ===== */
+        header { margin-bottom: 10px; }
+
+        .h-name {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .h-role {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        .h-contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 18px;
+            margin-top: 7px;
+            padding-top: 7px;
+            border-top: 2px solid var(--accent);
+        }
+
+        .h-contacts a,
+        .h-contacts span {
+            font-size: 0.76rem;
+            color: var(--muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .h-contacts a:hover { color: var(--accent); }
+
+        .h-contacts svg {
+            width: 12px; height: 12px;
+            fill: var(--accent);
+            flex-shrink: 0;
+        }
+
+        /* ===== SECTIONS ===== */
+        .section { margin-bottom: 8px; }
+
+        .sec-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ===== RESUMO ===== */
+        .resumo-text {
+            font-size: 0.84rem;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        /* ===== SKILLS ===== */
+        .skills-table { display: flex; flex-direction: column; gap: 5px; }
+        .skill-row { display: flex; gap: 8px; font-size: 0.8rem; }
+        .skill-cat {
+            font-weight: 600;
+            color: var(--dark);
+            min-width: 110px;
+            flex-shrink: 0;
+        }
+        .skill-list { color: #374151; }
+
+        /* ===== PROJETOS ===== */
+        .proj-list { display: flex; flex-direction: column; gap: 6px; }
+
+        .proj-item { display: flex; flex-direction: column; gap: 2px; break-inside: avoid; page-break-inside: avoid; }
+
+        .proj-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+        .proj-name { font-size: 0.88rem; font-weight: 700; color: var(--dark); }
+        .proj-stack { font-size: 0.72rem; color: var(--muted); font-style: italic; }
+        .proj-desc { font-size: 0.79rem; color: #374151; line-height: 1.6; }
+        .proj-link {
+            font-size: 0.72rem; color: var(--accent);
+            text-decoration: none; display: inline-flex;
+            align-items: center; gap: 3px; margin-top: 1px;
+        }
+        .proj-link:hover { text-decoration: underline; }
+
+        /* ===== EXPERIÊNCIA & FORMAÇÃO ===== */
+        .entry-list { display: flex; flex-direction: column; gap: 6px; }
+
+        .entry { display: flex; flex-direction: column; gap: 2px; break-inside: avoid; page-break-inside: avoid; }
+
+        .entry-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+        .entry-title { font-size: 0.88rem; font-weight: 700; color: var(--dark); }
+        .entry-date {
+            font-size: 0.72rem; color: var(--muted);
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .entry-org { font-size: 0.79rem; color: var(--accent); font-weight: 500; }
+        .entry-place { font-size: 0.74rem; color: var(--muted); }
+        .entry-desc { font-size: 0.79rem; color: #374151; line-height: 1.6; margin-top: 2px; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body { background: #fff; }
+            .page { margin: 0; box-shadow: none; padding: 28px 32px; width: 100%; }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- HEADER -->
+    <header>
+        <h1 class="h-name">Luiz Gustavo Domingues Lacerda</h1>
+        <p class="h-role">Full Stack Developer &nbsp;|&nbsp; .NET &middot; Angular &middot; Python &middot; Inteligência Artificial</p>
+        <div class="h-contacts">
+            <a href="mailto:lacerdadomingues1@gmail.com">
+                <svg viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                lacerdadomingues1@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/luiz-gustavo-domingues-lacerda-4a4a36238" target="_blank">
+                <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                linkedin.com/in/luiz-gustavo-domingues-lacerda
+            </a>
+            <a href="https://github.com/Luiz-Gustavo-D-Lacerda" target="_blank">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                github.com/Luiz-Gustavo-D-Lacerda
+            </a>
+            <a href="https://luiz-gustavo-d-lacerda.github.io/meu-portfolio/" target="_blank">
+                <svg viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                luiz-gustavo-d-lacerda.github.io/meu-portfolio
+            </a>
+            <span>
+                <svg viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                Belo Horizonte, MG &nbsp;&middot;&nbsp; Disponível para Estágio / Freelance
+            </span>
+        </div>
+    </header>
+
+    <!-- RESUMO -->
+    <section class="section">
+        <h2 class="sec-title">Resumo</h2>
+        <p class="resumo-text">
+            Desenvolvedor Full Stack com experiência em aplicações completas — do backend ao frontend — aplicando boas práticas de arquitetura de software, padrões de projeto e integração entre sistemas. Trabalhei com <strong>chatbots com IA</strong> (OpenAI + FAISS), <strong>sistemas financeiros</strong> (.NET + Mediator), <strong>automação com visão computacional</strong> (Google Vision AI + Python) e <strong>interfaces modernas</strong> com Angular Standalone Components. Busco oportunidade de estágio ou freelance para aplicar e ampliar habilidades em engenharia de software, com foco em qualidade, inovação e eficiência.
+        </p>
+    </section>
+
+    <!-- HABILIDADES -->
+    <section class="section">
+        <h2 class="sec-title">Habilidades Técnicas</h2>
+        <div class="skills-table">
+            <div class="skill-row">
+                <span class="skill-cat">Linguagens</span>
+                <span class="skill-list">C#, Python, Java, TypeScript, JavaScript, HTML5, CSS3</span>
+            </div>
+            <div class="skill-row">
+                <span class="skill-cat">Frameworks</span>
+                <span class="skill-list">.NET 8, Angular, Flask, Node.js, React, Entity Framework Core, Prisma, JUnit 5</span>
+            </div>
+            <div class="skill-row">
+                <span class="skill-cat">Banco de Dados</span>
+                <span class="skill-list">MySQL, PostgreSQL, SQL</span>
+            </div>
+            <div class="skill-row">
+                <span class="skill-cat">IA & Automação</span>
+                <span class="skill-list">OpenAI GPT-4, FAISS, Embeddings, Google Vision AI (OCR), Machine Learning</span>
+            </div>
+            <div class="skill-row">
+                <span class="skill-cat">Arquitetura</span>
+                <span class="skill-list">Clean Architecture, MVC, Padrão Mediator, APIs REST, Microsserviços</span>
+            </div>
+            <div class="skill-row">
+                <span class="skill-cat">Ferramentas</span>
+                <span class="skill-list">Git, GitHub, Azure, Postman, Swagger, Socket.io, Jira, TDD, QA</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJETOS -->
+    <section class="section">
+        <h2 class="sec-title">Projetos</h2>
+        <div class="proj-list">
+
+            <div class="proj-item">
+                <div class="proj-header">
+                    <span class="proj-name">QBank — Banco Digital</span>
+                    <span class="proj-stack">.NET · C# · Angular · MySQL · JWT · Padrão Mediator</span>
+                </div>
+                <p class="proj-desc">Sistema bancário completo desenvolvido em equipe de 5 pessoas. Implementa padrão Mediator, autenticação OAuth2/JWT, gerenciamento de contas e operações financeiras com arquitetura orientada a domínio.</p>
+            </div>
+
+            <div class="proj-item">
+                <div class="proj-header">
+                    <span class="proj-name">Chatbot Jurídico com IA</span>
+                    <span class="proj-stack">Python · Flask · OpenAI GPT-4 · FAISS · HTML/CSS/JS</span>
+                </div>
+                <p class="proj-desc">Assistente inteligente especializado em Direito do Consumidor. Processa PDFs de legislação, gera embeddings e responde perguntas com busca semântica via FAISS, permitindo respostas precisas baseadas em documentos reais.</p>
+                <a class="proj-link" href="https://luiz-gustavo-d-lacerda.github.io/Front_chatbot/" target="_blank">&#8599; Demo online</a>
+            </div>
+
+            <div class="proj-item">
+                <div class="proj-header">
+                    <span class="proj-name">PDV Bar — Ponto de Venda</span>
+                    <span class="proj-stack">React · Node.js · Socket.io · PostgreSQL · Prisma · JWT · Tailwind</span>
+                </div>
+                <p class="proj-desc">Sistema de ponto de venda para bar e restaurante com roteamento automático de pedidos por terminal de preparo (Bar / Cozinha), atualização em tempo real via Socket.io, autenticação JWT e controle de estoque.</p>
+                <a class="proj-link" href="https://pdv-bar-seven.vercel.app/login" target="_blank">&#8599; Demo online</a>
+            </div>
+
+            <div class="proj-item">
+                <div class="proj-header">
+                    <span class="proj-name">LuGol API</span>
+                    <span class="proj-stack">.NET 8 · C# · Entity Framework Core · MySQL · Swagger</span>
+                </div>
+                <p class="proj-desc">API RESTful com autenticação via BCrypt, documentação automática via Swagger e ORM com Entity Framework Core. Segue boas práticas de design de APIs REST.</p>
+            </div>
+
+            <div class="proj-item">
+                <div class="proj-header">
+                    <span class="proj-name">Gestão de Contas — QA</span>
+                    <span class="proj-stack">Java · JUnit 5 · Maven · TDD</span>
+                </div>
+                <p class="proj-desc">Sistema bancário em Java com cobertura completa de testes: unitários, integração, desempenho e caixa branca. Ciclo de desenvolvimento gerenciado com Jira em sprints seguindo metodologia ágil.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EXPERIÊNCIA -->
+    <section class="section">
+        <h2 class="sec-title">Experiência</h2>
+        <div class="entry-list">
+
+            <div class="entry">
+                <div class="entry-top">
+                    <span class="entry-title">Caixa</span>
+                    <span class="entry-date">set/2022 — mar/2023</span>
+                </div>
+                <span class="entry-org">IRMAOS MATTAR &amp; CIA LTDA</span>
+                <span class="entry-place">Capelinha, MG &nbsp;&middot;&nbsp; 7 meses</span>
+                <p class="entry-desc">Atendimento ao cliente, controle de caixa e execução de operações financeiras com precisão e responsabilidade.</p>
+            </div>
+
+            <div class="entry">
+                <div class="entry-top">
+                    <span class="entry-title">Assistente Administrativo</span>
+                    <span class="entry-date">abr/2021 — abr/2022</span>
+                </div>
+                <span class="entry-org">Aperam BioEnergia Ltda.</span>
+                <span class="entry-place">1 ano e 1 mês</span>
+                <p class="entry-desc">Suporte em processos administrativos, controle documental e organização de rotinas operacionais.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FORMAÇÃO -->
+    <section class="section">
+        <h2 class="sec-title">Formação Acadêmica</h2>
+        <div class="entry-list">
+            <div class="entry">
+                <div class="entry-top">
+                    <span class="entry-title">Bacharelado em Ciências da Computação</span>
+                    <span class="entry-date">abr/2023 — jan/2027</span>
+                </div>
+                <span class="entry-org">Centro Universitário de Belo Horizonte — UNI-BH</span>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>
