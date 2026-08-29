@@ -61,14 +61,16 @@ function splitWords(el) {
 }
 
 if (hasGSAP && !reduceMotion) {
-    /* dramatic word-by-word title reveal */
+    /* toggleActions: play on the way down, reverse (animate back out) on the way up */
+    const REPLAY = 'play none none reverse';
+
+    /* dramatic word-by-word title reveal — replays each pass */
     document.querySelectorAll('.section-title').forEach(title => {
         const words = splitWords(title);
-        gsap.set(words, { yPercent: 125, opacity: 0, rotate: 5 });
-        gsap.to(words, {
-            yPercent: 0, opacity: 1, rotate: 0,
+        gsap.from(words, {
+            yPercent: 125, opacity: 0, rotate: 5,
             duration: 1.15, ease: 'power4.out', stagger: 0.14,
-            scrollTrigger: { trigger: title, start: 'top 90%', once: true }
+            scrollTrigger: { trigger: title, start: 'top 88%', toggleActions: REPLAY }
         });
     });
 
@@ -89,26 +91,32 @@ if (hasGSAP && !reduceMotion) {
         });
     });
 
-    /* project cards — scale + rise, staggered on entry */
-    const cards = gsap.utils.toArray('.project-card');
-    cards.forEach(c => c.classList.remove('fade-in'));
-    gsap.set(cards, { opacity: 0, y: 80, scale: 0.85 });
-    ScrollTrigger.batch(cards, {
+    /* project cards — fly in on entry, fly back out on scroll up */
+    document.querySelectorAll('.project-card').forEach(c => c.classList.remove('fade-in'));
+    const cardEls = gsap.utils.toArray('.projects-grid .project-card');
+    gsap.set(cardEls, { opacity: 0, y: 80, scale: 0.85 });
+    ScrollTrigger.batch(cardEls, {
         start: 'top 85%',
         onEnter: b => gsap.to(b, {
-            opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power3.out', stagger: 0.13, overwrite: true,
-            onComplete: () => gsap.set(b, { clearProps: 'opacity,transform' })
+            opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power3.out', stagger: 0.12, overwrite: true,
+            onComplete: () => gsap.set(b, { clearProps: 'transform' })   // hand transform back to VanillaTilt
+        }),
+        onLeaveBack: b => gsap.to(b, {
+            opacity: 0, y: 80, scale: 0.85, duration: 0.5, ease: 'power2.in', stagger: 0.06, overwrite: true
         })
     });
 
-    /* skill cards (visible tab) — pop in with a slight overshoot */
-    const skills = gsap.utils.toArray('#tab-frontend .skill-item');
-    gsap.set(skills, { opacity: 0, y: 44, scale: 0.8 });
-    ScrollTrigger.batch(skills, {
-        start: 'top 92%',
+    /* skill cards (visible tab) — pop in / pop back out */
+    const skillEls = gsap.utils.toArray('#tab-frontend .skill-item');
+    gsap.set(skillEls, { opacity: 0, y: 44, scale: 0.8 });
+    ScrollTrigger.batch(skillEls, {
+        start: 'top 90%',
         onEnter: b => gsap.to(b, {
             opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.5)', stagger: 0.07, overwrite: true,
-            onComplete: () => gsap.set(b, { clearProps: 'opacity,transform' })
+            onComplete: () => gsap.set(b, { clearProps: 'transform' })   // let :hover lift work again
+        }),
+        onLeaveBack: b => gsap.to(b, {
+            opacity: 0, y: 44, scale: 0.8, duration: 0.4, ease: 'power2.in', stagger: 0.04, overwrite: true
         })
     });
 
@@ -249,8 +257,8 @@ window.addEventListener('resize', () => { resize(); initPts(); });
 if (hasGSAP && !reduceMotion) {
     ScrollTrigger.batch('.fade-in:not(.project-card)', {
         start: 'top 90%',
-        once: true,
-        onEnter: batch => batch.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 80))
+        onEnter:      batch => batch.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 60)),
+        onLeaveBack:  batch => batch.forEach(el => el.classList.remove('visible'))
     });
 } else {
     const io = new IntersectionObserver((entries) => {
