@@ -1,3 +1,71 @@
+/* ===== MOTION SETUP (Lenis + GSAP ScrollTrigger) ===== */
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const hasGSAP = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+let lenis = null;
+
+if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
+
+if (typeof window.Lenis !== 'undefined' && !reduceMotion) {
+    lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, smoothWheel: true });
+    if (hasGSAP) {
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(t => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+    } else {
+        const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+        requestAnimationFrame(raf);
+    }
+}
+
+/* smooth anchor navigation */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        const target = href.length > 1 ? document.querySelector(href) : null;
+        if (href !== '#' && !target) return;
+        e.preventDefault();
+        if (lenis)      lenis.scrollTo(target || 0, { offset: -70 });
+        else            (target || document.body).scrollIntoView({ behavior: 'smooth' });
+    });
+});
+
+/* word-by-word reveal for section titles */
+function splitWords(el) {
+    const nodes = [...el.childNodes];
+    const inners = [];
+    el.textContent = '';
+    nodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            node.textContent.split(/(\s+)/).forEach(part => {
+                if (!part) return;
+                if (!part.trim()) { el.appendChild(document.createTextNode(part)); return; }
+                const mask  = document.createElement('span'); mask.className  = 'rw';
+                const inner = document.createElement('span'); inner.className = 'rw-i';
+                inner.textContent = part;
+                mask.appendChild(inner); el.appendChild(mask); inners.push(inner);
+            });
+        } else {
+            const mask  = document.createElement('span'); mask.className  = 'rw';
+            const inner = document.createElement('span'); inner.className = 'rw-i';
+            inner.appendChild(node);
+            mask.appendChild(inner); el.appendChild(mask); inners.push(inner);
+        }
+    });
+    return inners;
+}
+
+if (hasGSAP && !reduceMotion) {
+    document.querySelectorAll('.section-title').forEach(title => {
+        const words = splitWords(title);
+        gsap.set(words, { yPercent: 115 });
+        gsap.to(words, {
+            yPercent: 0, duration: 0.85, ease: 'power3.out', stagger: 0.055,
+            scrollTrigger: { trigger: title, start: 'top 88%', once: true }
+        });
+    });
+    window.addEventListener('load', () => ScrollTrigger.refresh());
+}
+
 /* ===== CURSOR ===== */
 const cDot  = document.getElementById('c-dot');
 const cRing = document.getElementById('c-ring');
@@ -129,10 +197,18 @@ resize(); initPts(); loop();
 window.addEventListener('resize', () => { resize(); initPts(); });
 
 /* ===== FADE IN ===== */
-const io = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); io.unobserve(e.target); } });
-}, { threshold: 0.08 });
-document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+if (hasGSAP && !reduceMotion) {
+    ScrollTrigger.batch('.fade-in', {
+        start: 'top 90%',
+        once: true,
+        onEnter: batch => batch.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 80))
+    });
+} else {
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); io.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+}
 
 /* ===== SKILL BARS ===== */
 const skillIO = new IntersectionObserver((entries) => {

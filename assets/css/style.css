@@ -451,3 +451,32 @@ footer { border-top: 1px solid var(--border); padding: 28px 0; }
     .footer-inner { flex-direction: column; align-items: center; text-align: center; }
     .skills-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ===== LENIS SMOOTH SCROLL ===== */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* ===== WORD REVEAL (section titles) ===== */
+.section-title .rw {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-block: 0.08em 0.18em;
+    margin-block: -0.08em -0.18em;
+}
+.section-title .rw-i {
+    display: inline-block;
+    color: var(--text-primary);
+    will-change: transform;
+}
+.section-title .rw-i span { color: var(--purple-light); }
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+    .section-title .rw { overflow: visible; }
+    .section-title .rw-i { transform: none !important; }
+    .fade-in { opacity: 1; transform: none; }
+}
