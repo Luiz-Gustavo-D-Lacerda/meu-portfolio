@@ -253,6 +253,77 @@ function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); pts.forEach(p=>
 resize(); initPts(); loop();
 window.addEventListener('resize', () => { resize(); initPts(); });
 
+/* ===== GLOBAL SCROLL-REACTIVE BACKGROUND ===== */
+(function () {
+    const bg = document.getElementById('bg-canvas');
+    if (!bg) return;
+    const bx = bg.getContext('2d');
+    const PAL = ['#7c3aed', '#39ff14', '#a855f7', '#4f46e5'];
+    let W, H, dots = [];
+    function size() {
+        W = bg.width  = window.innerWidth;
+        H = bg.height = window.innerHeight;
+        const n = Math.min(120, Math.round(W * H / 16000));
+        dots = Array.from({ length: n }, () => ({
+            x: Math.random() * W, y: Math.random() * H,
+            r: Math.random() * 1.5 + 0.4,
+            vx: (Math.random() - 0.5) * 0.12,
+            vy: (Math.random() - 0.5) * 0.12,
+            a: Math.random() * 0.4 + 0.12,
+            c: PAL[(Math.random() * PAL.length) | 0]
+        }));
+    }
+    size();
+    window.addEventListener('resize', size);
+
+    if (reduceMotion) {
+        // one static frame, no animation
+        bx.clearRect(0, 0, W, H);
+        dots.forEach(d => { bx.globalAlpha = d.a; bx.fillStyle = d.c; bx.beginPath(); bx.arc(d.x, d.y, d.r, 0, 7); bx.fill(); });
+        return;
+    }
+
+    let lastScroll = window.scrollY, vel = 0;
+    function draw() {
+        const now = window.scrollY;
+        vel += ((now - lastScroll) - vel) * 0.12;   // smoothed scroll velocity
+        lastScroll = now;
+        const push = Math.max(-9, Math.min(9, vel * 0.22));
+        const stretch = 1 + Math.min(2.2, Math.abs(push) * 0.4);
+        const linkA = 0.03 + Math.min(0.13, Math.abs(vel) * 0.009);
+
+        bx.clearRect(0, 0, W, H);
+        for (const d of dots) {
+            d.x += d.vx;
+            d.y += d.vy - push * 0.35;               // particles drift against the scroll
+            if (d.x < -20) d.x = W + 20; else if (d.x > W + 20) d.x = -20;
+            if (d.y < -20) d.y = H + 20; else if (d.y > H + 20) d.y = -20;
+            bx.globalAlpha = d.a;
+            bx.fillStyle = d.c;
+            bx.beginPath();
+            bx.ellipse(d.x, d.y, d.r, d.r * stretch, 0, 0, 7);
+            bx.fill();
+        }
+        bx.strokeStyle = '#7c3aed';
+        bx.lineWidth = 0.5;
+        for (let i = 0; i < dots.length; i++)
+            for (let j = i + 1; j < dots.length; j++) {
+                const dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
+                const q = dx * dx + dy * dy;
+                if (q < 15000) {
+                    bx.globalAlpha = linkA * (1 - q / 15000);
+                    bx.beginPath();
+                    bx.moveTo(dots[i].x, dots[i].y);
+                    bx.lineTo(dots[j].x, dots[j].y);
+                    bx.stroke();
+                }
+            }
+        bx.globalAlpha = 1;
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
 /* ===== FADE IN ===== */
 if (hasGSAP && !reduceMotion) {
     ScrollTrigger.batch('.fade-in:not(.project-card)', {
