@@ -6,7 +6,13 @@ let lenis = null;
 if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
 
 if (typeof window.Lenis !== 'undefined' && !reduceMotion) {
-    lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, smoothWheel: true });
+    lenis = new Lenis({
+        duration: 1.5,
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        wheelMultiplier: 0.8,
+        smoothWheel: true,
+        syncTouch: true
+    });
     if (hasGSAP) {
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add(t => lenis.raf(t * 1000));
@@ -55,14 +61,57 @@ function splitWords(el) {
 }
 
 if (hasGSAP && !reduceMotion) {
+    /* dramatic word-by-word title reveal */
     document.querySelectorAll('.section-title').forEach(title => {
         const words = splitWords(title);
-        gsap.set(words, { yPercent: 115 });
+        gsap.set(words, { yPercent: 125, opacity: 0, rotate: 5 });
         gsap.to(words, {
-            yPercent: 0, duration: 0.85, ease: 'power3.out', stagger: 0.055,
-            scrollTrigger: { trigger: title, start: 'top 88%', once: true }
+            yPercent: 0, opacity: 1, rotate: 0,
+            duration: 1.15, ease: 'power4.out', stagger: 0.14,
+            scrollTrigger: { trigger: title, start: 'top 90%', once: true }
         });
     });
+
+    /* hero parallax — layers drift at different speeds as the hero scrolls away */
+    gsap.timeline({
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 }
+    })
+        .to('.hero-wrap',     { yPercent: 30, opacity: 0.1, ease: 'none' }, 0)
+        .to('#hero-canvas',   { yPercent: 16,  ease: 'none' }, 0)
+        .to('#matrix-canvas', { yPercent: 38,  ease: 'none' }, 0)
+        .to('.hero-floats',   { yPercent: -26, ease: 'none' }, 0);
+
+    /* parallax on the giant section watermark numbers */
+    gsap.utils.toArray('.sec-num').forEach(num => {
+        gsap.fromTo(num, { yPercent: -20 }, {
+            yPercent: 28, ease: 'none',
+            scrollTrigger: { trigger: num.closest('.section'), start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+    });
+
+    /* project cards — scale + rise, staggered on entry */
+    const cards = gsap.utils.toArray('.project-card');
+    cards.forEach(c => c.classList.remove('fade-in'));
+    gsap.set(cards, { opacity: 0, y: 80, scale: 0.85 });
+    ScrollTrigger.batch(cards, {
+        start: 'top 85%',
+        onEnter: b => gsap.to(b, {
+            opacity: 1, y: 0, scale: 1, duration: 0.9, ease: 'power3.out', stagger: 0.13, overwrite: true,
+            onComplete: () => gsap.set(b, { clearProps: 'opacity,transform' })
+        })
+    });
+
+    /* skill cards (visible tab) — pop in with a slight overshoot */
+    const skills = gsap.utils.toArray('#tab-frontend .skill-item');
+    gsap.set(skills, { opacity: 0, y: 44, scale: 0.8 });
+    ScrollTrigger.batch(skills, {
+        start: 'top 92%',
+        onEnter: b => gsap.to(b, {
+            opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.5)', stagger: 0.07, overwrite: true,
+            onComplete: () => gsap.set(b, { clearProps: 'opacity,transform' })
+        })
+    });
+
     window.addEventListener('load', () => ScrollTrigger.refresh());
 }
 
@@ -198,7 +247,7 @@ window.addEventListener('resize', () => { resize(); initPts(); });
 
 /* ===== FADE IN ===== */
 if (hasGSAP && !reduceMotion) {
-    ScrollTrigger.batch('.fade-in', {
+    ScrollTrigger.batch('.fade-in:not(.project-card)', {
         start: 'top 90%',
         once: true,
         onEnter: batch => batch.forEach((el, i) => setTimeout(() => el.classList.add('visible'), i * 80))
@@ -229,6 +278,12 @@ document.querySelectorAll('.skills-tab').forEach(tab => {
         tab.classList.add('active');
         const panel = document.getElementById('tab-' + tab.dataset.tab);
         panel.classList.add('active');
+        if (hasGSAP && !reduceMotion) {
+            gsap.fromTo(panel.querySelectorAll('.skill-item'),
+                { opacity: 0, y: 26, scale: 0.88 },
+                { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'power2.out', stagger: 0.05, overwrite: true,
+                  onComplete: function () { gsap.set(this.targets(), { clearProps: 'opacity,transform' }); } });
+        }
         setTimeout(() => { panel.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.width = b.dataset.level + '%'; }); }, 50);
     });
 });

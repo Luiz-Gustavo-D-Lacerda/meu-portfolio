@@ -464,19 +464,20 @@ html.lenis, html.lenis body { height: auto; }
     display: inline-block;
     overflow: hidden;
     vertical-align: top;
-    padding-block: 0.08em 0.18em;
-    margin-block: -0.08em -0.18em;
+    padding: 0.16em 0.14em 0.32em;
+    margin: -0.16em -0.14em -0.32em;
 }
 .section-title .rw-i {
     display: inline-block;
     color: var(--text-primary);
-    will-change: transform;
+    will-change: transform, opacity;
 }
 .section-title .rw-i span { color: var(--purple-light); }
 
 /* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
     .section-title .rw { overflow: visible; }
-    .section-title .rw-i { transform: none !important; }
+    .section-title .rw-i { transform: none !important; opacity: 1 !important; }
     .fade-in { opacity: 1; transform: none; }
+    .project-card, .skill-item { opacity: 1 !important; transform: none !important; }
 }
